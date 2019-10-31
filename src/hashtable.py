@@ -46,45 +46,76 @@ class HashTable:
     def insert(self, key, value):
         '''
         Store the value with the given key.
-
         Hash collisions should be handled with Linked List Chaining.
-
-        Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current_pair = self.storage[index]
+        previous_pair = None
 
+        while (current_pair is not None) and (current_pair.key != key):
+            previous_pair = current_pair
+            current_pair = previous_pair.next
+
+        if current_pair is not None:
+            current_pair.value = value
+        else:
+            next_pair = LinkedPair(key, value)
+            next_pair.next = self.storage[index]
+            self.storage[index] = next_pair
 
 
     def remove(self, key):
         '''
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
-        Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+
+        current_pair = self.storage[index]
+        previous_pair = None
+
+        while (current_pair is not None) and (current_pair.key != key):
+            previous_pair = current_pair
+            current_pair = previous_pair.next
+
+        if current_pair is None:
+            print("KEY ERROR: " + key)
+        else:
+            if previous_pair is not None:
+                previous_pair.next = current_pair.next
+            else:
+                self.storage[index] = current_pair.next
 
 
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
-        Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current_pair = self.storage[index]
+
+        while current_pair is not None:
+            if current_pair.key == key:
+                return current_pair.value
+            current_pair = current_pair.next
 
 
     def resize(self):
         '''
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
-
-        Fill this in.
         '''
-        pass
+        self.capacity = self.capacity * 2
+        old = self.storage
+        self.storage = [None] * self.capacity
+        current_pair = None
+
+        for current_pair in old:
+            while current_pair is not None:
+                self.insert(current_pair.key, current_pair.value)
+                current_pair = current_pair.next
+
 
 
 
